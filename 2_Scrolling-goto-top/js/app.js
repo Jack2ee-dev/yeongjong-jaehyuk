@@ -1,3 +1,8 @@
+const SCROLL_OPTION = {
+  top: 0,
+  behavior: 'smooth'
+}
+
 const $body = document.querySelector('body');
 const $scrollIcon = document.querySelector('.scroll-icon');
 
@@ -22,5 +27,5 @@ const toggleScrollIcon = () => {
 document.addEventListener('scroll', throttle(toggleScrollIcon, 200));
 
 $scrollIcon.addEventListener('click', () => {
-  window.scrollTo(0, 0);
+  window.scroll(SCROLL_OPTION);
 })
