@@ -1,0 +1,27 @@
+{
+  "name": "yeongjong-jaehyuk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jack2ee-dev/yeongjong-jaehyuk.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jack2ee-dev/yeongjong-jaehyuk/issues"
+  },
+  "homepage": "https://github.com/Jack2ee-dev/yeongjong-jaehyuk#readme",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4"
+  }
+}
