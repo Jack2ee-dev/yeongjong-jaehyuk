@@ -1,40 +1,64 @@
+const BASE_TIME = {
+  mm: 0,
+  ss: 0,
+  ms: 0
+};
+
+const [$button1, $button2] = document.getElementsByClassName('control');
+const $display = document.querySelector('.display');
+const $laps = document.querySelector('.laps');
+
 // hooks
-const useState = defaultValue => {
+const useState = (defaultValue, customRenderFunction) => {
   let value = defaultValue;
 
   const get = () => value;
   const set = updated => {
     value = updated;
-    render();
+    customRenderFunction();
   };
 
   return [get, set];
 };
 
-const [$button1, $button2] = document.getElementsByClassName('control');
-const [currentTime, setCurrentTime] = useState({
-  mm: 0,
-  ss: 0,
-  ms: 0
-});
-const [laps, setLaps] = useState([]);
-let recordId = 1;
-let timerId;
-const $display = document.querySelector('.display');
+// states
+const [currentTime, setCurrentTime] = useState({ ...BASE_TIME }, render);
+const [laps, setLaps] = useState([], renderLaps);
 
-const format = s => (s < 10 ? '0' + s : s);
+// render functions
+function render() {
+  $display.textContent = formatTime();
+}
 
-const render = () => {
-  const ct = currentTime();
-  $display.textContent = `${format(ct.mm)}:${format(ct.ss)}:${format(ct.ms)}`;
-};
+function renderLaps() {
+  const _laps = laps();
 
-const start = () => {
-  $button1.textContent = 'Stop';
-  $button2.textContent = 'Lap';
-  $button2.removeAttribute('disabled');
+  $laps.innerHTML =
+    `
+            <div class="lap-title">Laps</div>
+            <div class="lap-title">Time</div>
+        ` +
+    _laps
+      .map(
+        lap => `
+    <div>${lap.lapId}</div>
+    <div>${lap.time}</div>
+    `
+      )
+      .join('');
+}
 
-  const parseTime = () => {
+// utils
+function formatTime() {
+  const format = n => (n < 10 ? '0' + n : n);
+  const { mm, ss, ms } = currentTime();
+  return `${format(mm)}:${format(ss)}:${format(ms)}`;
+}
+
+const timer = (() => {
+  let timerId;
+
+  const progress = () => {
     const ct = { ...currentTime() };
     if (ct.ms === 99) {
       ct.ss += 1;
@@ -48,39 +72,41 @@ const start = () => {
     setCurrentTime(ct);
   };
 
-  timerId = setInterval(parseTime, 10);
+  return {
+    start() {
+      timerId = setInterval(progress, 10);
+    },
+    stop() {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  };
+})();
+
+// function related to user interface
+const start = () => {
+  $button1.textContent = 'Stop';
+  $button2.textContent = 'Lap';
+  $button2.removeAttribute('disabled');
+  timer.start();
 };
 
 const stop = () => {
   $button1.textContent = 'Start';
   $button2.textContent = 'Reset';
-  clearInterval(timerId);
-  timerId = null;
+  timer.stop();
 };
 
 const reset = () => {
   $button2.setAttribute('disabled', true);
-  setCurrentTime({
-    mm: 0,
-    ss: 0,
-    ms: 0
-  });
+  setCurrentTime({ ...BASE_TIME });
 };
 
 const lap = () => {
-  setLaps();
-
-  const newLap = document.createDocumentFragment();
-  const record = document.createElement('div');
-  record.textContent = recordId++;
-  newLap.appendChild(record);
-  const time = document.createElement('div');
-  const ct = currentTime();
-  time.textContent = `${format(ct.mm)}:${format(ct.ss)}:${format(ct.ms)}`;
-  newLap.appendChild(time);
-  document.querySelector('.laps').appendChild(newLap);
+  setLaps([...laps(), { lapId: laps().length + 1, time: formatTime() }]);
 };
 
+// event handlers
 $button1.addEventListener('click', () => {
   if ($button1.textContent === 'Start') {
     start();
