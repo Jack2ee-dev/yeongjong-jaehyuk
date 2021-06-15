@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Popup</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Open Sans';
+        font-weight: 300;
+      }
+      .title {
+        color: #db5b33;
+        font-weight: 300;
+        text-align: center;
+      }
+      /* 팝업을 위한 CSS */
+      .popup-wrapper {
+        display: none;
+      }
+      .active {
+        display: block;
+      }
+      .popup-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: #000;
+        opacity: 0.4;
+      }
+      .popup {
+        position: absolute;
+        width: 100vw;
+        max-width: 520px;
+        min-height: 200px;
+        background-color: #fff;
+        left: 50%;
+        top: 20%;
+        transform: translate3d(-50%, 0, 0);
+        padding: 20px 35px;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+          rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        border-radius: 5px;
+      }
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Popup</h1>
+    <!-- 팝업을 위한 HTML -->
+    <button class="toggle-button">toggle popup</button>
+    <p class="popup-message"></p>
+    <div class="popup-wrapper">
+      <div class="popup-background"></div>
+      <div class="popup">
+        <h1 class="title">Hello!</h1>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam
+        </p>
+        <form>
+          <input class="popup-input" />
+          <button class="popup-submit">OK</button>
+          <button class="cancel-button">Cancel</button>
+        </form>
+        <i class="close bx bx-x"></i>
+      </div>
+    </div>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
