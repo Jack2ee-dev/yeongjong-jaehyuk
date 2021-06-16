@@ -1,19 +1,8 @@
-const $tabs = document.querySelector('.tabs')
-const $glider = document.querySelector('.glider');
-const render = () => {
-  const _nav = '<nav>' + tabsInfo().map(({id, title}) => `
-    <input type="radio" id=${id} name="tab" ${activeTabId() === id ? "checked": ""}>
-    <label class="tab" for=${id}>${title}</label>
-  `).join('') + '<span class="glider"></span></nav>';
+const DEFAULT_TAB_ID = 1;
 
-  const _tabContent = tabsInfo().map(({id, content}) => `
-    <div class="tab-content ${activeTabId() === id ? 'active': ''}">${content}</div>
-  `).join('');
-  
-  $tabs.innerHTML = _nav + _tabContent;
-
-  document.querySelector(':root').style.setProperty('--tabs-length', tabsInfo().length);
-};
+const $root = document.querySelector(':root');
+const $tabs = document.querySelector('.tabs');
+const $spinner = document.querySelector('.spinner');
 
 const useState = defaultValue => {
   let value = defaultValue;
@@ -21,14 +10,52 @@ const useState = defaultValue => {
   const get = () => value;
   const set = updatedValue => {
     value = updatedValue;
-    render();
   };
 
   return [get, set];
 };
 
 const [tabsInfo, setTabsInfo] = useState([]);
-const [activeTabId, setActiveTabId] = useState(1);
+
+// functions
+const render = () => {
+  const _nav =
+    '<nav>' +
+    tabsInfo()
+      .map(
+        ({ id, title }) => `
+    <input type="radio" id=${id} name="tab" ${
+          id === DEFAULT_TAB_ID ? 'checked' : ''
+        }>
+    <label class="tab" for=${id}>${title}</label>
+  `
+      )
+      .join('') +
+    '<span class="glider"></span></nav>';
+
+  const _tabContent = tabsInfo()
+    .map(
+      ({ id, content }) => `
+    <div class="tab-content ${
+      id === DEFAULT_TAB_ID ? 'active' : ''
+    }">${content}</div>
+  `
+    )
+    .join('');
+
+  $tabs.innerHTML = _nav + _tabContent;
+
+  $root.style.setProperty('--tabs-length', tabsInfo().length);
+};
+
+const moveGlider = (labelID = DEFAULT_TAB_ID) => {
+
+  document.querySelector('.glider').style.left =
+    (labelID - 1) *
+      +getComputedStyle($root).getPropertyValue('--tab-width').trim() +
+    'px';
+};
+
 const fetchTabsData = () =>
   new Promise(resolve => {
     setTimeout(
@@ -54,19 +81,33 @@ const fetchTabsData = () =>
     );
   });
 
+// event listeners
 window.addEventListener('DOMContentLoaded', () => {
   fetchTabsData()
     .then(result => {
       setTabsInfo(result);
-      document.querySelector('.spinner').style.display = 'none';
+    })
+    .then(() => {
+      $spinner.style.display = 'none';
+
+      render();
+      moveGlider();
     })
     .catch(exception => {
       throw new Error(exception);
     });
 });
 
+$tabs.addEventListener('click', ({target}) => {
+  if (!target.matches('.tabs > nav > label')) return;
 
-$tabs.addEventListener('click', e => {
-  setActiveTabId(+e.target.id);
-  $glider.style.left = (+e.target.id * 200) + 'px';
-})
+  const labelID = +target.htmlFor;
+
+  [...document.getElementsByClassName('tab-content')].forEach(
+    (_tabContent, i) => {
+      _tabContent.classList.toggle('active', i + 1 === labelID);
+    }
+    );
+
+  moveGlider(labelID);
+});
