@@ -3,7 +3,7 @@ const $submenu = document.querySelector('.submenu');
 const $activeMenu = document.querySelector(
   '.accordion > .menu-container.active'
 );
-const $menuContainers = document.getElementsByClassName('menu-container');
+const $menuContainers = document.querySelectorAll('.menu-container');
 
 // event handlers
 $accordion.addEventListener('click', e => {
