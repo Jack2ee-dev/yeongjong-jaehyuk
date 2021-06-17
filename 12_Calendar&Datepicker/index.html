@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calendar</title>
     <!-- 원하는 폰트와 아이콘을 사용해도 좋다. -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" />
-    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
     <style>
-
+      :root {
+        --primary: #3bba6d;
+        --calendar-size: 500px;
+      }
       *,
       *::after,
       *::before {
@@ -25,6 +34,18 @@
       }
 
       /* 뷰를 구현하세요. */
+      .date-picker {
+        width: 200px;
+        height: 40px;
+        margin-bottom: 5px;
+      }
+      .calendar-grid > div {
+        height: 50px;
+        width: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
       .red {
         color: red;
       }
@@ -33,16 +54,24 @@
       }
       .red,
       .black {
-        height: 50px;
-        width: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         border-radius: 50%;
         cursor: pointer;
       }
+      .focus,
+      .black:hover,
+      .red:hover {
+        background-color: var(--primary);
+        color: white;
+        transition: 0.3s all;
+      }
       .calendar {
-        opacity: 0;
+        display: none;
+        width: var(--calendar-size);
+        overflow: hidden;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+          rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        border-radius: 10px;
+        padding: 10px;
       }
       .calendar-grid {
         display: grid;
@@ -54,24 +83,18 @@
         user-select: none;
       }
       .calendar-nav {
-        background-color: green;
+        background-color: var(--primary);
         display: flex;
         justify-content: space-around;
         align-items: center;
+        color: #fff;
+        font-size: 1.5em;
+        padding: 20px 0;
       }
       .prev,
       .next {
-        color: #fff;
         cursor: pointer;
         padding: 10px;
-      }
-      .focus,
-      .black:hover,
-      .red:hover {
-        background-color: green;
-        color: white;
-        transition: 0.3s all;
-
       }
     </style>
   </head>
@@ -84,8 +107,7 @@
         <div class="month"></div>
         <i class="next bx bxs-right-arrow"></i>
       </div>
-      <div class="calendar-grid">
-      </div>
+      <div class="calendar-grid"></div>
     </div>
     <script src="js/app.js"></script>
   </body>
