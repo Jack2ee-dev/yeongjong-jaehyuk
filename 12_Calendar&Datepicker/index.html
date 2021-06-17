@@ -26,6 +26,7 @@
       body {
         font-family: 'Open Sans';
         font-weight: 300;
+        margin: auto;
       }
       .title {
         color: #db5b33;
@@ -34,6 +35,11 @@
       }
 
       /* 뷰를 구현하세요. */
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
       .date-picker {
         width: 200px;
         height: 40px;
@@ -71,7 +77,7 @@
         box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
           rgba(0, 0, 0, 0.22) 0px 10px 10px;
         border-radius: 10px;
-        padding: 10px;
+        user-select: none;
       }
       .calendar-grid {
         display: grid;
@@ -80,34 +86,41 @@
         justify-items: center;
         align-items: center;
         color: lightgray;
-        user-select: none;
+        padding: 10px;
       }
       .calendar-nav {
         background-color: var(--primary);
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
         color: #fff;
         font-size: 1.5em;
-        padding: 20px 0;
+        padding: 20px;
       }
       .prev,
       .next {
         cursor: pointer;
         padding: 10px;
       }
+      .month {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
     </style>
   </head>
   <body>
     <h1 class="title">Calendar</h1>
-    <input class="date-picker" type="text" placeholder="Select Date" readonly />
-    <div class="calendar">
-      <div class="calendar-nav">
-        <i class="prev bx bxs-left-arrow"></i>
-        <div class="month"></div>
-        <i class="next bx bxs-right-arrow"></i>
+    <div class="container">
+      <input class="date-picker" type="text" placeholder="Select Date" readonly />
+      <div class="calendar">
+        <div class="calendar-nav">
+          <i class="prev bx bxs-left-arrow"></i>
+          <div class="month"></div>
+          <i class="next bx bxs-right-arrow"></i>
+        </div>
+        <div class="calendar-grid"></div>
       </div>
-      <div class="calendar-grid"></div>
     </div>
     <script src="js/app.js"></script>
   </body>
