@@ -2,12 +2,10 @@ const $calendar = document.querySelector('.calendar');
 const $calendarGrid = document.querySelector('.calendar-grid');
 const $prevBtn = document.querySelector('.prev');
 const $nextBtn = document.querySelector('.next');
-const $calendarMonth = document.querySelector('.month');
-const $datePicker = document.querySelector('.date-picker');
+const $monthAndYear = document.querySelector('.month-and-year');
+const $datePicker = document.querySelector('.date-picker-selector');
 
-const now = new Date();
-let [year, month, date] = [now.getFullYear(), now.getMonth(), now.getDate()];
-const monthNames = [
+const MONTH_NAMES = [
   'January',
   'Feburary',
   'March',
@@ -22,83 +20,125 @@ const monthNames = [
   'December'
 ];
 
+const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+const now = new Date();
+
+let year = now.getFullYear();
+let month = now.getMonth();
+let date = now.getDate();
+
 // functions
-const getFirstDay = (year, month) => new Date(`${year}/${month + 1}/1`).getDay();
-const getLastDate = (year, month) => new Date(year, month + 1, 0).getDate();
+const getFirstDay = (year, month) => new Date(year, month, 1).getDay();
 const getLastDay = (year, month) => new Date(year, month + 1, 0).getDay();
+const getLastDate = (year, month) => new Date(year, month + 1, 0).getDate();
 
 const getPrevCalendar = () => {
   month = month === 0 ? 11 : month - 1;
   year = month === 0 ? year - 1 : year;
+
+  const prevMonthLastDate = getLastDate(year, month);
+  date = prevMonthLastDate < date ? prevMonthLastDate : date;
+
   render();
 };
 
 const getNextCalendar = () => {
   year = month === 11 ? year + 1 : year;
   month = month === 11 ? 0 : month + 1;
+
+  const prevMonthLastDate = getLastDate(year, month);
+  date = prevMonthLastDate < date ? prevMonthLastDate : date;
+
   render();
 };
 
 const render = () => {
-  $calendarMonth.innerHTML = `
-    <div>${monthNames[month]}</div>
+  $monthAndYear.innerHTML = `
+    <div>${MONTH_NAMES[month]}</div>
     <div>${year}</div>
   `;
 
+  const prevMonthDates = Array.from(
+    { length: getFirstDay(year, month) },
+    (_, i) => new Date(year, month, -getFirstDay(year, month) + i + 1)
+  );
+
   const thisMonthDates = Array.from(
     { length: getLastDate(year, month) },
-    (_, i) => {
-      const d = new Date(year, month, i + 1);
-      return { year: d.getFullYear(), month: d.getMonth(), day: d.getDay(), date: d.getDate() };
-    }
+    (_, i) => new Date(year, month, i + 1)
   );
 
-  let mapped = thisMonthDates.map(
-    obj =>
-      `<div class="date ${obj.day === 0 ? 'red' : 'black'} ${
-        obj.date === date ? 'focus' : ''
-      }">${obj.date}</div>`
+  const nextMonthDates = Array.from(
+    { length: 7 - getLastDay(year, month) - 1 },
+    (_, i) => new Date(year, month + 1, i + 1)
   );
 
-  let lastDate = getLastDate(year, month - 1);
-
-  for (let i = getFirstDay(year, month); i > 0; i--) {
-    mapped = [`<div class="date">${lastDate--}</div>`, ...mapped];
-  }
-
-  for (let i = 1; i < 7 - getLastDay(year, month); i++) {
-    mapped = [...mapped, `<div class="date">${i}</div>`];
-  }
+  const datesToBeDisplayed = [
+    ...prevMonthDates,
+    ...thisMonthDates,
+    ...nextMonthDates
+  ].map(
+    dates => `<div
+        data-year=${dates.getFullYear()}
+        data-month=${dates.getMonth()}
+        data-date=${dates.getDate()}
+        class="
+          ${
+            dates.getMonth() !== month
+              ? 'gray'
+              : dates.getDay() === 0
+              ? 'red'
+              : 'black'
+          }
+          ${
+            dates.getMonth() === month && dates.getDate() === date
+              ? 'focus'
+              : ''
+          }">${dates.getDate()}</div>`
+  );
 
   $calendarGrid.innerHTML = [
-    ...['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(
-      day => `<div>${day}</div>`
+    ...DAY_NAMES.map(
+      dayName => `<div class="dayName-of-the-week">${dayName}</div>`
     ),
-    ...mapped
+    ...datesToBeDisplayed
   ].join('');
 };
 
 // event handlers
 window.addEventListener('DOMContentLoaded', render);
+
 $prevBtn.addEventListener('click', getPrevCalendar);
+
 $nextBtn.addEventListener('click', getNextCalendar);
+
 $datePicker.addEventListener('click', () => {
   $calendar.style.display = 'block';
 });
 
 $calendarGrid.addEventListener('click', e => {
-  if (!e.target.matches('.date')) return;
-  if (!e.target.matches('.black') && !e.target.matches('.red')) return;
+  if (
+    !(
+      e.target.matches('.red') ||
+      e.target.matches('.black') ||
+      e.target.matches('.gray')
+    )
+  )
+    return;
 
   const format = s => (s < 10 ? '0' + s : s);
-  date = +e.target.textContent;
+
+  const { dataset } = e.target;
+  year = +dataset.year;
+  month = +dataset.month;
+  date = +dataset.date;
 
   document
-    .querySelector('input.date-picker')
-    .setAttribute(
-      'value',
-      `${year}-${format(month + 1)}-${format(e.target.textContent)}`
-    );
+    .querySelector('input.date-picker-selector')
+    .setAttribute('value', `${year}-${format(month + 1)}-${format(date)}`);
+
   $calendar.style.display = 'none';
+
   render();
 });

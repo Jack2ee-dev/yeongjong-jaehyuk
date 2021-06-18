@@ -16,7 +16,7 @@
     <style>
       :root {
         --primary: #3bba6d;
-        --calendar-size: 500px;
+        --calendar-size: 400px;
       }
       *,
       *::after,
@@ -40,7 +40,7 @@
         flex-direction: column;
         align-items: center;
       }
-      .date-picker {
+      .date-picker-selector {
         width: 200px;
         height: 40px;
         margin-bottom: 5px;
@@ -58,14 +58,19 @@
       .black {
         color: black;
       }
+      .gray {
+        color: lightgray;
+      }
       .red,
-      .black {
-        border-radius: 50%;
+      .black,
+      .gray {
         cursor: pointer;
+        border-radius: 50%;
       }
       .focus,
       .black:hover,
-      .red:hover {
+      .red:hover,
+      .gray:hover {
         background-color: var(--primary);
         color: white;
         transition: 0.3s all;
@@ -81,20 +86,22 @@
       }
       .calendar-grid {
         display: grid;
-        grid-gap: 3px;
+        grid-gap: 4px;
+        font-size: calc(var(--calendar-size) * 0.035);
         grid-template-columns: repeat(7, 1fr);
         justify-items: center;
         align-items: center;
         color: lightgray;
         padding: 10px;
+
       }
       .calendar-nav {
         background-color: var(--primary);
+        font-size: calc(var(--calendar-size) * 0.05);
         display: flex;
         justify-content: space-between;
         align-items: center;
         color: #fff;
-        font-size: 1.5em;
         padding: 20px;
       }
       .prev,
@@ -102,7 +109,7 @@
         cursor: pointer;
         padding: 10px;
       }
-      .month {
+      .month-and-year {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -112,11 +119,11 @@
   <body>
     <h1 class="title">Calendar</h1>
     <div class="container">
-      <input class="date-picker" type="text" placeholder="Select Date" readonly />
+      <input class="date-picker-selector" type="text" placeholder="Select Date" readonly />
       <div class="calendar">
         <div class="calendar-nav">
           <i class="prev bx bxs-left-arrow"></i>
-          <div class="month"></div>
+          <span class="month-and-year"></span>
           <i class="next bx bxs-right-arrow"></i>
         </div>
         <div class="calendar-grid"></div>
