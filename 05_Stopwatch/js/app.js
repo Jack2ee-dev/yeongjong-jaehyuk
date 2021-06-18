@@ -52,6 +52,7 @@ function renderLaps() {
 function formatTime() {
   const format = n => (n < 10 ? '0' + n : n);
   const { mm, ss, ms } = currentTime();
+
   return `${format(mm)}:${format(ss)}:${format(ms)}`;
 }
 
@@ -60,15 +61,19 @@ const timer = (() => {
 
   const progress = () => {
     const ct = { ...currentTime() };
+
     if (ct.ms === 99) {
       ct.ss += 1;
       ct.ms = 0;
     }
+
     if (ct.ss === 59) {
       ct.mm += 1;
       ct.ss = 0;
     }
+
     ct.ms += 1;
+
     setCurrentTime(ct);
   };
 
@@ -100,6 +105,8 @@ const stop = () => {
 const reset = () => {
   $button2.setAttribute('disabled', true);
   setCurrentTime({ ...BASE_TIME });
+  setLaps([]);
+  $laps.innerHTML = '';
 };
 
 const lap = () => {
