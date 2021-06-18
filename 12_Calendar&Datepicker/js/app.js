@@ -33,22 +33,34 @@ const getFirstDay = (year, month) => new Date(year, month, 1).getDay();
 const getLastDay = (year, month) => new Date(year, month + 1, 0).getDay();
 const getLastDate = (year, month) => new Date(year, month + 1, 0).getDate();
 
+const format = s => (s < 10 ? '0' + s : s);
+
 const getPrevCalendar = () => {
+  const prevMonthLastDate = getLastDate(year, month);
+  
   month = month === 0 ? 11 : month - 1;
   year = month === 0 ? year - 1 : year;
-
-  const prevMonthLastDate = getLastDate(year, month);
   date = prevMonthLastDate < date ? prevMonthLastDate : date;
+
+  $datePicker.setAttribute(
+    'value',
+    `${year}-${format(month + 1)}-${format(date)}`
+  );
 
   render();
 };
 
 const getNextCalendar = () => {
+  const prevMonthLastDate = getLastDate(year, month);
+  
   year = month === 11 ? year + 1 : year;
   month = month === 11 ? 0 : month + 1;
-
-  const prevMonthLastDate = getLastDate(year, month);
   date = prevMonthLastDate < date ? prevMonthLastDate : date;
+
+  $datePicker.setAttribute(
+    'value',
+    `${year}-${format(month + 1)}-${format(date)}`
+  );
 
   render();
 };
@@ -127,16 +139,16 @@ $calendarGrid.addEventListener('click', e => {
   )
     return;
 
-  const format = s => (s < 10 ? '0' + s : s);
-
   const { dataset } = e.target;
+  
   year = +dataset.year;
   month = +dataset.month;
   date = +dataset.date;
 
-  document
-    .querySelector('input.date-picker-selector')
-    .setAttribute('value', `${year}-${format(month + 1)}-${format(date)}`);
+  $datePicker.setAttribute(
+    'value',
+    `${year}-${format(month + 1)}-${format(date)}`
+  );
 
   $calendar.style.display = 'none';
 
