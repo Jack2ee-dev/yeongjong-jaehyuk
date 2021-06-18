@@ -3,16 +3,15 @@ const SCROLL_OPTION = {
   behavior: 'smooth'
 }
 
-const $body = document.querySelector('body');
 const $scrollIcon = document.querySelector('.scroll-icon');
 
 // functions
 const throttle = (callback, delay) => {
   let timerId;
 
-  return (event) => {
+  return event => {
     if (timerId) return;
-    timerId = setTimeout((event) => {
+    timerId = setTimeout(event => {
       callback(event);
       timerId = null;
     }, delay, event)
