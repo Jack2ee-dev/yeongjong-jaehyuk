@@ -37,6 +37,7 @@ function render() {
   $counter.textContent = counterValue();
 }
 
+// handlers
 document.addEventListener('DOMContentLoaded', render);
 
 $increaseBtn.addEventListener('click', increase);
